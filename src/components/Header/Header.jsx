@@ -1,6 +1,11 @@
+import { useState, useCallback } from 'react'
 import './Header.css'
+import PageTransition from '../PageTransition/PageTransition'
 
 function Header() {
+  const [isTransitioning, setIsTransitioning] = useState(false)
+  const [targetHref, setTargetHref] = useState(null)
+
   const menuItems = [
     { label: 'Home', href: '#home' },
     { label: 'About', href: '#about' },
@@ -8,34 +13,67 @@ function Header() {
     { label: 'Contact us', href: '#contact' },
   ]
 
-  const handleNavClick = () => {
-    // Dispatch event to disable auto-scroll snap for 2 seconds
+  const handleNavClick = (e, href) => {
+    e.preventDefault()
+    
+    // Don't trigger if already transitioning
+    if (isTransitioning) return
+    
+    // Start transition
+    setTargetHref(href)
+    setIsTransitioning(true)
+    
+    // Dispatch event to disable auto-scroll
     window.dispatchEvent(new CustomEvent('headerNavClick'))
   }
 
+  // Scroll to target while overlay covers screen
+  const handleTransitionMiddle = useCallback(() => {
+    if (targetHref) {
+      const element = document.querySelector(targetHref)
+      if (element) {
+        element.scrollIntoView({ behavior: 'instant' })
+      }
+    }
+  }, [targetHref])
+
+  // Animation complete - cleanup
+  const handleTransitionComplete = useCallback(() => {
+    setIsTransitioning(false)
+    setTargetHref(null)
+  }, [])
+
   return (
-    <header className="header">
-      <div className="header-content">
-        <div className="logo">
-          <span className="logo-text">NAMPOX</span>
+    <>
+      <PageTransition 
+        isActive={isTransitioning} 
+        onMiddle={handleTransitionMiddle}
+        onComplete={handleTransitionComplete} 
+      />
+      
+      <header className="header">
+        <div className="header-content">
+          <div className="logo">
+            <span className="logo-text">NAMPOX</span>
+          </div>
+          <nav className="nav">
+            {menuItems.map((item) => (
+              <a 
+                key={item.href} 
+                href={item.href} 
+                className="nav-link"
+                onClick={(e) => handleNavClick(e, item.href)}
+              >
+                <span className="nav-link-text">
+                  <span className="nav-link-text-inner">{item.label}</span>
+                  <span className="nav-link-text-inner">{item.label}</span>
+                </span>
+              </a>
+            ))}
+          </nav>
         </div>
-        <nav className="nav">
-          {menuItems.map((item) => (
-            <a 
-              key={item.href} 
-              href={item.href} 
-              className="nav-link"
-              onClick={handleNavClick}
-            >
-              <span className="nav-link-text">
-                <span className="nav-link-text-inner">{item.label}</span>
-                <span className="nav-link-text-inner">{item.label}</span>
-              </span>
-            </a>
-          ))}
-        </nav>
-      </div>
-    </header>
+      </header>
+    </>
   )
 }
 

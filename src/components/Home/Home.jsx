@@ -185,10 +185,10 @@ function Home() {
           {/* Main Content */}
           <div className="home-main">
             <h1 className="home-headline">
-              Backend developer xây dựng các giải pháp
+              Backend Developer crafting
               <br />
-              <span className="highlight">hệ thống</span> và <span className="highlight">hiệu quả</span>
-            </h1>
+              <span className="highlight">scalable</span> and <span className="highlight">efficient</span> solutions
+          </h1>
             
             <div className="home-footer">
               <div className="rating-badge">
