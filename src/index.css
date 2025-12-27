@@ -1,5 +1,5 @@
 :root {
-  --bg-primary: #0a0a0f;
+  --bg-white: #ffffff;
   --bg-secondary: #12121a;
   --bg-card: #1a1a25;
   --bg-card-hover: #222230;
@@ -16,6 +16,7 @@
   --gradient-1: linear-gradient(135deg, #00d9ff 0%, #a855f7 50%, #ff6b9d 100%);
   --gradient-2: linear-gradient(135deg, #1a1a25 0%, #0a0a0f 100%);
   --shadow-glow: 0 0 40px rgba(0, 217, 255, 0.15);
+  --font-size-19: 19px;
 }
 
 * {
@@ -30,7 +31,7 @@ html {
 
 body {
   font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
-  background: var(--bg-primary);
+  background: var(--bg-white);
   color: var(--text-primary);
   line-height: 1.6;
   min-height: 100vh;

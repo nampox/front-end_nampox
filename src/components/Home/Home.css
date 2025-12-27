@@ -1,0 +1,394 @@
+/* Home Wrapper */
+.home-wrapper {
+  background: #fff;
+}
+
+/* Home Section Base */
+.home-section {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 100px 4rem 4rem;
+  background: #fff;
+}
+
+/* Section 1 - Hero */
+.home-section-1 {
+  position: relative;
+}
+
+/* Section 2 - Expanding Square */
+.home-section-2 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.expanding-square {
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  border-radius: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.1s ease-out, border-radius 0.3s ease;
+  transform-origin: center center;
+}
+
+.expanding-square[style*="scale(1)"] {
+  border-radius: 0;
+}
+
+.square-content {
+  text-align: center;
+  color: #fff;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.expanding-square[style*="scale(0.9)"] .square-content,
+.expanding-square[style*="scale(1)"] .square-content {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.square-content h2 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.square-content p {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: clamp(1rem, 2vw, 1.5rem);
+  opacity: 0.8;
+}
+
+.home-container {
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 4rem;
+}
+
+/* Main Content */
+.home-main {
+  flex: 1;
+}
+
+.home-headline {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  font-weight: 700;
+  color: #000;
+  line-height: 1.15;
+  margin-bottom: 3rem;
+  letter-spacing: -0.02em;
+}
+
+.home-headline .highlight {
+  font-style: italic;
+}
+
+/* Home Footer - Rating & Services */
+.home-footer {
+  display: flex;
+  align-items: flex-start;
+  gap: 3rem;
+  flex-wrap: wrap;
+}
+
+/* Rating Badge */
+.rating-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.logo-mini {
+  width: 40px;
+  height: 40px;
+  background: #000;
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 700;
+  font-size: 1.25rem;
+}
+
+.rating-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.stars {
+  color: #fbbf24;
+  font-size: 1rem;
+  letter-spacing: 2px;
+}
+
+.rating-text {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+/* Services Tags */
+.services-tags {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #666;
+  letter-spacing: 0.5px;
+  line-height: 1.6;
+}
+
+/* Right Side */
+.home-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2rem;
+  margin-bottom: 5rem;
+}
+
+/* Scroll Indicator with Eye */
+.scroll-indicator {
+  position: relative;
+  width: 140px;
+  height: 140px;
+}
+
+/* Eye Wrapper */
+.eye-wrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+}
+
+/* Eye Shape - Oval/almond shape */
+.eye-shape {
+  position: relative;
+  width: 65px;
+  height: 32px;
+}
+
+/* Eyeball - Almond/eye shape with pointed ends */
+.eyeball {
+  width: 100%;
+  height: 100%;
+  background: #ebe6f5;
+  border: 2px solid #2d2d4a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+  position: relative;
+  border-radius: 80% 80% 80% 80%;
+}
+
+/* Eye Lashes - Attached to top edge of eyeball */
+.eye-lashes {
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  display: flex;
+  justify-content: space-between;
+  z-index: 4;
+}
+
+.eye-lashes span {
+  display: block;
+  width: 2.5px;
+  height: 10px;
+  background: #1a1a3a;
+  transform-origin: bottom center;
+  clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);
+}
+
+.eye-lashes span:nth-child(1) { 
+  transform: rotate(-50deg); 
+  height: 8px;
+  width: 2px;
+}
+.eye-lashes span:nth-child(2) { 
+  transform: rotate(-25deg); 
+  height: 10px;
+  width: 2.3px;
+}
+.eye-lashes span:nth-child(3) { 
+  transform: rotate(0deg); 
+  height: 11px;
+  width: 2.5px;
+}
+.eye-lashes span:nth-child(4) { 
+  transform: rotate(25deg); 
+  height: 10px;
+  width: 2.3px;
+}
+.eye-lashes span:nth-child(5) { 
+  transform: rotate(50deg); 
+  height: 8px;
+  width: 2px;
+}
+
+/* Iris - Larger purple iris */
+.iris {
+  width: 32px;
+  height: 32px;
+  background: #c4b5fd;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(0,0,0,0.1);
+}
+
+/* Pupil - Larger dark pupil */
+.pupil {
+  width: 14px;
+  height: 14px;
+  background: #1a1a3a;
+  border-radius: 50%;
+  position: relative;
+  transition: transform 0.1s ease-out;
+}
+
+.pupil-shine {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 4px;
+  height: 4px;
+  background: #fff;
+  border-radius: 50%;
+}
+
+/* Blink Animation - Smooth */
+.eye-shape {
+  transition: transform 0.12s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.eye-wrapper.blinking .eye-shape {
+  transform: scaleY(0.05);
+}
+
+/* Rotating Text */
+.scroll-text {
+  width: 100%;
+  height: 100%;
+  animation: rotate 15s linear infinite;
+}
+
+.rotating-text {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  fill: #1a1a3a;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Capabilities Button */
+.capabilities-btn {
+  padding: 1rem 1.75rem;
+  background: transparent;
+  color: #000;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border: 1.5px solid #ccc;
+  border-radius: 50px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.capabilities-btn:hover {
+  background: #000;
+  color: #fff;
+  border-color: #000;
+  text-shadow: none;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .home-section {
+    padding: 120px 2rem 4rem;
+  }
+
+  .home-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .home-right {
+    align-items: flex-start;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+    margin-bottom: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .home-headline {
+    font-size: 2rem;
+  }
+
+  .home-footer {
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .home-right {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .scroll-indicator {
+    width: 120px;
+    height: 120px;
+  }
+
+  .eye-shape {
+    width: 50px;
+    height: 34px;
+  }
+
+  .iris {
+    width: 26px;
+    height: 26px;
+  }
+
+  .pupil {
+    width: 12px;
+    height: 12px;
+  }
+}
