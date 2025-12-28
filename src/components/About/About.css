@@ -1,63 +1,178 @@
-/* About Section */
+/* About Section - White BG like other sections */
 .about-section {
   min-height: 100vh;
+  padding: 0;
+  background: #fff;
+  color: #1a1a1a;
+  overflow: hidden;
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 6rem 2rem;
-  background: #f8f8f8;
 }
 
-.about-content {
-  max-width: 900px;
-  text-align: center;
+/* Horizontal wrapper - contains everything and scrolls together */
+.about-horizontal-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 4rem;
+  padding: 4rem 8rem;
+  will-change: transform;
+}
+
+/* LEFT COLUMN - Title section */
+.about-left {
+  flex: 0 0 400px;
+  min-width: 400px;
+  padding-right: 2rem;
 }
 
 .about-title {
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: clamp(2.5rem, 5vw, 4rem);
-  font-weight: 700;
-  color: #000;
-  margin-bottom: 2rem;
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+  color: #1a1a1a;
 }
 
-.about-description {
+.title-highlight {
+  color: #999;
+  transition: color 0.3s ease;
+}
+
+.about-section:hover .title-highlight {
+  color: #666;
+}
+
+.about-intro {
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: clamp(1rem, 1.5vw, 1.25rem);
+  font-size: 1.1rem;
+  font-weight: 400;
+  color: #666;
+  line-height: 1.7;
+  max-width: 320px;
+}
+
+/* Individual Item - Card style */
+.about-item {
+  flex: 0 0 1000px;
+  min-width: 1000px;
+  height: 622px;
+  padding: 3rem;
+  background: #f8f8f8;
+  border-radius: 24px;
+  transition: all 0.4s ease;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  position: relative;
+}
+
+.about-item:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.08);
+}
+
+.item-number {
+  display: block;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  font-weight: 800;
+  color: #ddd;
+  margin-bottom: 1.5rem;
+  transition: all 0.4s ease;
+  line-height: 1;
+}
+
+.about-item:hover .item-number {
+  color: #1a1a1a;
+}
+
+.item-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: clamp(1.3rem, 2.5vw, 1.6rem);
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 1rem;
+  line-height: 1.2;
+}
+
+.item-desc {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.95rem;
   font-weight: 400;
   color: #666;
   line-height: 1.8;
-  margin-bottom: 4rem;
-  max-width: 700px;
-  margin-left: auto;
-  margin-right: auto;
 }
 
-.about-stats {
-  display: flex;
-  justify-content: center;
-  gap: 4rem;
-  flex-wrap: wrap;
+/* Responsive Adjustments */
+@media (max-width: 1400px) {
+  .about-item {
+    flex: 0 0 800px;
+    min-width: 800px;
+    height: 520px;
+  }
 }
 
-.stat-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
+@media (max-width: 1200px) {
+  .about-horizontal-wrapper {
+    padding: 3rem 4rem;
+    gap: 3rem;
+  }
+  
+  .about-left {
+    flex: 0 0 350px;
+    min-width: 350px;
+  }
+  
+  .about-item {
+    flex: 0 0 600px;
+    min-width: 600px;
+    height: 450px;
+  }
 }
 
-.stat-number {
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: clamp(2.5rem, 4vw, 3.5rem);
-  font-weight: 700;
-  color: #000;
+@media (max-width: 768px) {
+  .about-section {
+    min-height: auto;
+    padding: 4rem 0;
+  }
+  
+  .about-horizontal-wrapper {
+    flex-direction: column;
+    padding: 2rem;
+    gap: 2rem;
+    transform: none !important; /* Disable horizontal scroll on mobile */
+  }
+
+  .about-left {
+    flex: none;
+    min-width: auto;
+    width: 100%;
+    padding-right: 0;
+  }
+
+  .about-intro {
+    max-width: 100%;
+  }
+
+  .about-item {
+    flex: none;
+    min-width: auto;
+    width: 100%;
+    height: auto;
+    min-height: 200px;
+    padding: 2rem;
+  }
 }
 
-.stat-label {
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 1rem;
-  font-weight: 400;
-  color: #666;
+/* Animation Enhancement */
+@media (prefers-reduced-motion: no-preference) {
+  .about-item {
+    will-change: transform, opacity;
+  }
+  
+  .about-horizontal-wrapper {
+    will-change: transform;
+  }
 }
-
