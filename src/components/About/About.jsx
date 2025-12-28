@@ -113,12 +113,16 @@ function About() {
     }
     window.addEventListener('headerNavClick', handleHeaderNavClick)
 
-    // Touch handlers for mobile
+    // Touch handlers - disabled on mobile (vertical layout)
     const handleTouchStart = (e) => {
+      // Skip on mobile - use vertical scroll
+      if (window.innerWidth <= 768) return
       touchStartY = e.touches[0].clientY
     }
 
     const handleTouchMove = (e) => {
+      // Skip on mobile - use vertical scroll
+      if (window.innerWidth <= 768) return
       if (isAutoScrolling || isInCooldown) return
 
       const scrollY = window.scrollY
@@ -144,6 +148,8 @@ function About() {
     }
 
     const handleWheel = (e) => {
+      // Skip on mobile - use vertical scroll
+      if (window.innerWidth <= 768) return
       if (isAutoScrolling || isInCooldown) return
 
       const scrollY = window.scrollY

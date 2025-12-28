@@ -141,20 +141,22 @@
 
 @media (max-width: 768px) {
   .about-section {
-    min-height: 100vh;
-    padding: 0;
+    min-height: auto;
+    padding: 4rem 0;
   }
   
   .about-horizontal-wrapper {
-    padding: 2rem 4rem;
+    flex-direction: column;
+    padding: 2rem;
     gap: 2rem;
-    /* Keep horizontal scroll on mobile */
+    transform: none !important; /* Disable horizontal scroll on mobile */
   }
 
   .about-left {
-    flex: 0 0 280px;
-    min-width: 280px;
-    padding-right: 1rem;
+    flex: none;
+    min-width: auto;
+    width: 100%;
+    padding-right: 0;
   }
 
   .about-title {
@@ -163,14 +165,16 @@
 
   .about-intro {
     font-size: 0.95rem;
-    max-width: 260px;
+    max-width: 100%;
   }
 
   .about-item {
-    flex: 0 0 320px;
-    min-width: 320px;
-    height: 400px;
-    padding: 1.5rem;
+    flex: none;
+    min-width: auto;
+    width: 100%;
+    height: auto;
+    min-height: 280px;
+    padding: 2rem;
   }
   
   .item-number {
@@ -178,11 +182,11 @@
   }
   
   .item-title {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
   }
   
   .item-desc {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
   }
 }
 
