@@ -1,21 +1,21 @@
 import { useState, useEffect, useRef } from 'react'
 import './Home.css'
 
-// Custom smooth scroll with easing
-const smoothScrollTo = (targetY, duration = 800) => {
+// Ultra smooth scroll - easeOutExpo for instant response, smooth deceleration
+const smoothScrollTo = (targetY, duration = 500) => {
   const startY = window.scrollY
   const difference = targetY - startY
   const startTime = performance.now()
 
-  // Easing function - easeInOutQuart for buttery smooth feel
-  const easeInOutQuart = (t) => {
-    return t < 0.5 ? 8 * t * t * t * t : 1 - Math.pow(-2 * t + 2, 4) / 2
+  // easeOutExpo - starts fast, smooth deceleration (like qclay.design)
+  const easeOutExpo = (t) => {
+    return t === 1 ? 1 : 1 - Math.pow(2, -10 * t)
   }
 
   const animateScroll = (currentTime) => {
     const elapsed = currentTime - startTime
     const progress = Math.min(elapsed / duration, 1)
-    const easedProgress = easeInOutQuart(progress)
+    const easedProgress = easeOutExpo(progress)
     
     window.scrollTo(0, startY + difference * easedProgress)
 
@@ -33,9 +33,36 @@ function Home() {
   const section1Ref = useRef(null)
   const section2Ref = useRef(null)
   const squareRef = useRef(null)
+  const videoRef = useRef(null)
   const [isBlinking, setIsBlinking] = useState(false)
   const [isAutoScrolling, setIsAutoScrolling] = useState(false)
   const [squareScale, setSquareScale] = useState(0.3)
+  const [isVideoMuted, setIsVideoMuted] = useState(true)
+  const [isVideoPlaying, setIsVideoPlaying] = useState(true) // Auto-playing initially
+
+  // Handle video play with sound - restart from beginning
+  const handlePlayWithSound = () => {
+    if (videoRef.current) {
+      videoRef.current.currentTime = 0 // Reset to beginning
+      videoRef.current.muted = false
+      videoRef.current.play()
+      setIsVideoMuted(false)
+      setIsVideoPlaying(true)
+    }
+  }
+
+  // Toggle play/pause when clicking on video
+  const handleVideoClick = () => {
+    if (!videoRef.current || isVideoMuted) return // Don't handle if still showing play button
+    
+    if (videoRef.current.paused) {
+      videoRef.current.play()
+      setIsVideoPlaying(true)
+    } else {
+      videoRef.current.pause()
+      setIsVideoPlaying(false)
+    }
+  }
 
   // Track mouse movement for eye
   useEffect(() => {
@@ -60,13 +87,13 @@ function Home() {
     return () => window.removeEventListener('mousemove', handleMouseMove)
   }, [])
 
-  // Auto scroll - block native scroll and auto scroll immediately (no jitter)
+  // Ultra responsive auto scroll - no delay, instant response
   useEffect(() => {
     let isInCooldown = false
     let cooldownTimer = null
-    const TOLERANCE = 50
+    const TOLERANCE = 30
 
-    const startCooldown = (duration = 800) => {
+    const startCooldown = (duration = 500) => {
       isInCooldown = true
       if (cooldownTimer) clearTimeout(cooldownTimer)
       cooldownTimer = setTimeout(() => {
@@ -91,30 +118,30 @@ function Home() {
 
       const direction = e.deltaY > 0 ? 'down' : 'up'
 
-      // At Section 1 (top) - scroll down
+      // At Section 1 (top) - scroll down instantly
       if (scrollY < TOLERANCE && direction === 'down') {
         e.preventDefault()
         setIsAutoScrolling(true)
-        startCooldown(800)
-        smoothScrollTo(section2Top, 600)
-        setTimeout(() => setIsAutoScrolling(false), 700)
+        startCooldown(500)
+        smoothScrollTo(section2Top, 450) // Fast, smooth
+        setTimeout(() => setIsAutoScrolling(false), 500)
         return
       }
 
-      // At Section 2
+      // At Section 2 - instant response
       if (Math.abs(scrollY - section2Top) < TOLERANCE) {
         e.preventDefault()
         setIsAutoScrolling(true)
-        startCooldown(800)
+        startCooldown(500)
         
         if (direction === 'down') {
           window.dispatchEvent(new CustomEvent('globalAutoScroll', { detail: { direction: 'down' } }))
-          smoothScrollTo(aboutTop, 600)
+          smoothScrollTo(aboutTop, 450)
         } else {
-          smoothScrollTo(0, 600)
+          smoothScrollTo(0, 450)
         }
         
-        setTimeout(() => setIsAutoScrolling(false), 700)
+        setTimeout(() => setIsAutoScrolling(false), 500)
         return
       }
     }
@@ -255,11 +282,40 @@ function Home() {
         <div 
           className="expanding-square" 
           ref={squareRef}
-          style={{ transform: `scale(${squareScale})` }}
+          style={{ 
+            transform: `scale(${squareScale})`,
+            borderRadius: squareScale >= 0.95 ? '0px' : `${40 * (1 - squareScale)}px`
+          }}
         >
+          <video 
+            ref={videoRef}
+            className={`section2-video ${!isVideoMuted ? 'clickable' : ''}`}
+            autoPlay 
+            muted 
+            loop 
+            playsInline
+            onClick={handleVideoClick}
+          >
+            <source src="/video.mp4" type="video/mp4" />
+          </video>
+          
+          {/* Play button overlay */}
+          {isVideoMuted && (
+            <button 
+              className="video-play-btn"
+              onClick={handlePlayWithSound}
+              aria-label="Play with sound"
+            >
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+              <span>Play with sound</span>
+            </button>
+          )}
+          
           <div className="square-content">
-            <h2>Explore My Work</h2>
-            <p>Discover innovative solutions and creative projects</p>
+            <h2>Nam Pox</h2>
+            <p>Backend Developer crafting scalable and efficient solutions</p>
           </div>
         </div>
       </div>

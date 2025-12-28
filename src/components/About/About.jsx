@@ -1,20 +1,20 @@
 import { useEffect, useRef, useState } from 'react'
 import './About.css'
 
-// Custom smooth scroll with easing
-const smoothScrollTo = (targetY, duration = 800) => {
+// Ultra smooth scroll - easeOutExpo for instant response
+const smoothScrollTo = (targetY, duration = 500) => {
   const startY = window.scrollY
   const difference = targetY - startY
   const startTime = performance.now()
 
-  const easeInOutQuart = (t) => {
-    return t < 0.5 ? 8 * t * t * t * t : 1 - Math.pow(-2 * t + 2, 4) / 2
+  const easeOutExpo = (t) => {
+    return t === 1 ? 1 : 1 - Math.pow(2, -10 * t)
   }
 
   const animateScroll = (currentTime) => {
     const elapsed = currentTime - startTime
     const progress = Math.min(elapsed / duration, 1)
-    const easedProgress = easeInOutQuart(progress)
+    const easedProgress = easeOutExpo(progress)
     
     window.scrollTo(0, startY + difference * easedProgress)
 
@@ -30,13 +30,13 @@ function About() {
   const sectionRef = useRef(null)
   const [isAutoScrolling, setIsAutoScrolling] = useState(false)
 
-  // Auto scroll - block native scroll and auto scroll immediately (no jitter)
+  // Ultra responsive auto scroll - no delay
   useEffect(() => {
     let isInCooldown = false
     let cooldownTimer = null
-    const TOLERANCE = 50
+    const TOLERANCE = 30
 
-    const startCooldown = (duration = 800) => {
+    const startCooldown = (duration = 500) => {
       isInCooldown = true
       if (cooldownTimer) clearTimeout(cooldownTimer)
       cooldownTimer = setTimeout(() => {
@@ -46,7 +46,7 @@ function About() {
 
     // Listen for global auto-scroll events
     const handleGlobalAutoScroll = () => {
-      startCooldown(800)
+      startCooldown(500)
     }
     window.addEventListener('globalAutoScroll', handleGlobalAutoScroll)
 
@@ -66,13 +66,13 @@ function About() {
 
       const direction = e.deltaY > 0 ? 'down' : 'up'
 
-      // At About section top - scroll up
+      // At About section top - scroll up instantly
       if (Math.abs(scrollY - sectionTop) < TOLERANCE && direction === 'up') {
         e.preventDefault()
         setIsAutoScrolling(true)
-        startCooldown(800)
-        smoothScrollTo(section2Top, 600)
-        setTimeout(() => setIsAutoScrolling(false), 700)
+        startCooldown(500)
+        smoothScrollTo(section2Top, 450)
+        setTimeout(() => setIsAutoScrolling(false), 500)
         return
       }
     }
