@@ -31,7 +31,37 @@ function About() {
   const sectionRef = useRef(null)
   const horizontalRef = useRef(null)
   const [isAutoScrolling, setIsAutoScrolling] = useState(false)
-  const [horizontalProgress, setHorizontalProgress] = useState(0) // 0 to 1
+  const [targetProgress, setTargetProgress] = useState(0) // Target value (0 to 1)
+  const [currentProgress, setCurrentProgress] = useState(0) // Actual animated value
+  const animationRef = useRef(null)
+
+  // Smooth lerp animation for floating effect
+  useEffect(() => {
+    const lerp = (start, end, factor) => start + (end - start) * factor
+    const clamp = (value, min, max) => Math.min(Math.max(value, min), max)
+    
+    const animate = () => {
+      setCurrentProgress(prev => {
+        const newValue = lerp(prev, targetProgress, 0.05) // Lower = more floating
+        // Clamp to boundaries (0 to 1) - stop at section limits
+        const clampedValue = clamp(newValue, 0, 1)
+        // Stop animation when close enough
+        if (Math.abs(clampedValue - targetProgress) < 0.001) {
+          return clamp(targetProgress, 0, 1)
+        }
+        return clampedValue
+      })
+      animationRef.current = requestAnimationFrame(animate)
+    }
+    
+    animationRef.current = requestAnimationFrame(animate)
+    
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current)
+      }
+    }
+  }, [targetProgress])
 
   const items = [
     {
@@ -58,8 +88,10 @@ function About() {
   useEffect(() => {
     let isInCooldown = false
     let cooldownTimer = null
+    let touchStartY = 0
     const TOLERANCE = 50
-    const SCROLL_SPEED = 0.15 // How fast horizontal scroll moves per wheel event
+    const SCROLL_SPEED = 0.12 // How fast horizontal scroll moves per wheel event
+    const TOUCH_SENSITIVITY = 0.003 // For touch swipe
 
     const startCooldown = (duration = 300) => {
       isInCooldown = true
@@ -81,6 +113,36 @@ function About() {
     }
     window.addEventListener('headerNavClick', handleHeaderNavClick)
 
+    // Touch handlers for mobile
+    const handleTouchStart = (e) => {
+      touchStartY = e.touches[0].clientY
+    }
+
+    const handleTouchMove = (e) => {
+      if (isAutoScrolling || isInCooldown) return
+
+      const scrollY = window.scrollY
+      const sectionTop = sectionRef.current?.offsetTop || 0
+      const isAtAboutTop = Math.abs(scrollY - sectionTop) < TOLERANCE
+
+      if (!isAtAboutTop) return
+
+      const touchCurrentY = e.touches[0].clientY
+      const deltaY = touchStartY - touchCurrentY
+      const direction = deltaY > 0 ? 'down' : 'up'
+
+      // Only handle horizontal scroll when at About top
+      if (direction === 'down' && targetProgress < 0.99) {
+        e.preventDefault()
+        setTargetProgress(prev => Math.min(1, prev + Math.abs(deltaY) * TOUCH_SENSITIVITY))
+        touchStartY = touchCurrentY
+      } else if (direction === 'up' && targetProgress > 0.01) {
+        e.preventDefault()
+        setTargetProgress(prev => Math.max(0, prev - Math.abs(deltaY) * TOUCH_SENSITIVITY))
+        touchStartY = touchCurrentY
+      }
+    }
+
     const handleWheel = (e) => {
       if (isAutoScrolling || isInCooldown) return
 
@@ -97,78 +159,83 @@ function About() {
       // Check positions
       const isAtAboutTop = Math.abs(scrollY - sectionTop) < TOLERANCE
       const isAtWorksTop = Math.abs(scrollY - worksTop) < TOLERANCE
-      const isInAboutSection = scrollY >= sectionTop - TOLERANCE && scrollY < worksTop - TOLERANCE
+      const isInAboutSection = scrollY >= sectionTop - TOLERANCE && scrollY <= worksTop + TOLERANCE
 
-      // Coming from Works section, scroll UP → need to reverse horizontal
+      // Coming from Works section, scroll UP → snap to About and set horizontal to max
       if (isAtWorksTop && direction === 'up') {
         e.preventDefault()
-        // Set horizontal to max and scroll to About top
-        setHorizontalProgress(1)
+        setTargetProgress(1)
+        setCurrentProgress(1) // Instant set for snap
         setIsAutoScrolling(true)
-        startCooldown(500)
-        smoothScrollTo(sectionTop, 450)
-        setTimeout(() => setIsAutoScrolling(false), 500)
+        startCooldown(800) // Longer cooldown
+        smoothScrollTo(sectionTop, 500)
+        setTimeout(() => setIsAutoScrolling(false), 800)
         return
       }
 
-      // In About section (anywhere) and scrolling UP with horizontal progress > 0
-      // Must reverse horizontal items first before allowing scroll to Home
-      if (isInAboutSection && direction === 'up' && horizontalProgress > 0) {
+      // IMPORTANT: If in About section and scrolling UP with progress > 0
+      // Must reverse horizontal items FIRST before any vertical scroll
+      if (isInAboutSection && direction === 'up' && targetProgress > 0.01) {
         e.preventDefault()
         
-        // First scroll to About top if not there
+        // If not at About top, scroll there first
         if (!isAtAboutTop) {
           setIsAutoScrolling(true)
-          startCooldown(300)
-          smoothScrollTo(sectionTop, 300)
-          setTimeout(() => setIsAutoScrolling(false), 300)
+          startCooldown(400)
+          smoothScrollTo(sectionTop, 350)
+          setTimeout(() => setIsAutoScrolling(false), 400)
           return
         }
         
-        // Then reverse horizontal items
-        setHorizontalProgress(prev => Math.max(0, prev - SCROLL_SPEED))
+        // At About top, reverse horizontal items
+        setTargetProgress(prev => Math.max(0, prev - SCROLL_SPEED))
         return
       }
 
-      // At About section top
+      // At About section top - handle horizontal scroll
       if (isAtAboutTop) {
-        // Scroll UP from About top AND horizontal at start → go back to Home section 2
-        if (direction === 'up' && horizontalProgress <= 0) {
+        // Scroll UP with horizontal at 0 → go back to Home section 2
+        if (direction === 'up' && targetProgress <= 0.01) {
           e.preventDefault()
           setIsAutoScrolling(true)
-          startCooldown(500)
-          smoothScrollTo(section2Top, 450)
-          setTimeout(() => setIsAutoScrolling(false), 500)
+          startCooldown(600)
+          smoothScrollTo(section2Top, 500)
+          setTimeout(() => setIsAutoScrolling(false), 600)
           return
         }
 
         // Scroll DOWN → move horizontal items forward
-        if (direction === 'down' && horizontalProgress < 1) {
-          e.preventDefault()
-          setHorizontalProgress(prev => Math.min(1, prev + SCROLL_SPEED))
-          return
-        }
-
-        // horizontalProgress >= 1 and scrolling down → allow normal scroll to Works
-        if (direction === 'down' && horizontalProgress >= 1) {
-          // Allow default scroll
+        if (direction === 'down') {
+          if (targetProgress < 0.99) {
+            e.preventDefault()
+            setTargetProgress(prev => Math.min(1, prev + SCROLL_SPEED))
+            return
+          }
+          // Horizontal at 1 → allow normal scroll to Works
           return
         }
       }
     }
 
     window.addEventListener('wheel', handleWheel, { passive: false })
+    window.addEventListener('touchstart', handleTouchStart, { passive: true })
+    window.addEventListener('touchmove', handleTouchMove, { passive: false })
+    
     return () => {
       window.removeEventListener('wheel', handleWheel)
+      window.removeEventListener('touchstart', handleTouchStart)
+      window.removeEventListener('touchmove', handleTouchMove)
       window.removeEventListener('globalAutoScroll', handleGlobalAutoScroll)
       window.removeEventListener('headerNavClick', handleHeaderNavClick)
       if (cooldownTimer) clearTimeout(cooldownTimer)
     }
-  }, [isAutoScrolling, horizontalProgress])
+  }, [isAutoScrolling, targetProgress])
 
-  // Calculate horizontal translate (in pixels for smoother control)
-  // Items are 1000px each + gap, need more translate distance
-  const horizontalTranslate = horizontalProgress * 2500 // Move 2500px total
+  // Calculate horizontal translate using animated currentProgress for floating effect
+  // Responsive: detect mobile and adjust translate distance
+  const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768
+  const translateDistance = isMobile ? 800 : 2500
+  const horizontalTranslate = currentProgress * translateDistance
 
   return (
     <section id="about" className="about-section" ref={sectionRef}>
@@ -177,8 +244,7 @@ function About() {
         className="about-horizontal-wrapper"
         ref={horizontalRef}
         style={{ 
-          transform: `translateX(-${horizontalTranslate}px)`,
-          transition: 'transform 0.15s ease-out'
+          transform: `translateX(-${horizontalTranslate}px)`
         }}
       >
         {/* LEFT COLUMN: Title - Fade in from bottom */}
@@ -218,28 +284,17 @@ function About() {
           </motion.p>
         </motion.div>
 
-        {/* ITEMS - Slide in from right */}
-        {items.map((item, index) => (
-          <motion.div 
+        {/* ITEMS - Simple render, no animation conflict */}
+        {items.map((item) => (
+          <div 
             key={item.id} 
             className="about-item"
             style={{ backgroundColor: item.bgColor }}
-            initial={{ opacity: 0, x: 150 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 150 }}
-            transition={{ 
-              duration: 0.6, 
-              ease: [0.25, 0.1, 0.25, 1],
-              delay: 0.1 + (index * 0.1),
-              opacity: { duration: 0.5 },
-              x: { duration: 0.6, ease: [0.33, 1, 0.68, 1] }
-            }}
-            viewport={{ amount: 0.2 }}
           >
             <span className="item-number">{item.id}</span>
             <h3 className="item-title">{item.title}</h3>
             <p className="item-desc">{item.desc}</p>
-          </motion.div>
+          </div>
         ))}
       </div>
     </section>
