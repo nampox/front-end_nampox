@@ -248,7 +248,7 @@ function About() {
   const getBoxTranslateX = (index) => {
     if (isMobile) return 0 // No parallax on mobile
     
-    const boxMaxTranslate = 330 // Di chuyển tối đa 500px sang phải
+    const boxMaxTranslate = 400 // Di chuyển tối đa 500px sang phải
     
     // Each item has its own progress range
     const itemCount = items.length
