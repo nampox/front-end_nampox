@@ -102,7 +102,7 @@
   height: 200px;
   background: rgba(255, 255, 255, 0.6);
   border-radius: 550px;
-  margin-bottom: 4rem;
+  margin-bottom: 5rem;
   border: 1px solid rgba(0, 0, 0, 0.08);
   /* Parallax effect - GPU accelerated */
   will-change: transform;
