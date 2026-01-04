@@ -1,29 +1,32 @@
 import './Contact.css'
+import { useLanguage } from '../../context/LanguageContext'
 
 function Contact() {
+  const { t } = useLanguage()
+  
   return (
     <section id="contact" className="contact-section">
       <div className="contact-content">
-        <h2 className="contact-title">Get In Touch</h2>
+        <h2 className="contact-title">{t('contact.title')}</h2>
         <p className="contact-subtitle">
-          Have a project in mind? Let's create something amazing together.
+          {t('contact.subtitle')}
         </p>
         <form className="contact-form">
           <div className="form-row">
             <div className="form-group">
-              <input type="text" placeholder="Your Name" required />
+              <input type="text" placeholder={t('contact.namePlaceholder')} required />
             </div>
             <div className="form-group">
-              <input type="email" placeholder="Your Email" required />
+              <input type="email" placeholder={t('contact.emailPlaceholder')} required />
             </div>
           </div>
           <div className="form-group">
-            <input type="text" placeholder="Subject" />
+            <input type="text" placeholder={t('contact.subjectPlaceholder')} />
           </div>
           <div className="form-group">
-            <textarea placeholder="Your Message" rows="5" required></textarea>
+            <textarea placeholder={t('contact.messagePlaceholder')} rows="5" required></textarea>
           </div>
-          <button type="submit" className="submit-btn">Send Message</button>
+          <button type="submit" className="submit-btn">{t('contact.submitButton')}</button>
         </form>
       </div>
     </section>

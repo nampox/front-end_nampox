@@ -1,16 +1,18 @@
 import { useState, useCallback } from 'react'
 import './Header.css'
 import PageTransition from '../PageTransition/PageTransition'
+import { useLanguage } from '../../context/LanguageContext'
 
 function Header() {
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [targetHref, setTargetHref] = useState(null)
+  const { language, toggleLanguage, t } = useLanguage()
 
   const menuItems = [
-    { label: 'Home', href: '#home' },
-    { label: 'About', href: '#about' },
-    { label: 'Works', href: '#works' },
-    { label: 'Contact us', href: '#contact' },
+    { label: t('header.home'), href: '#home' },
+    { label: t('header.about'), href: '#about' },
+    { label: t('header.works'), href: '#works' },
+    { label: t('header.contact'), href: '#contact' },
   ]
 
   const handleNavClick = (e, href) => {
@@ -70,6 +72,13 @@ function Header() {
                 </span>
               </a>
             ))}
+            <button 
+              className="lang-toggle"
+              onClick={toggleLanguage}
+              aria-label="Toggle language"
+            >
+              {language === 'en' ? 'VI' : 'EN'}
+            </button>
           </nav>
         </div>
       </header>

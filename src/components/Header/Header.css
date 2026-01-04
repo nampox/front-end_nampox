@@ -35,7 +35,7 @@
 .nav {
   display: flex;
   gap: 7rem;
-  transform: translateX(-35%);
+  transform: translateX(-12%);
 }
 
 /* Nav Link with slide-up effect */
@@ -79,6 +79,26 @@
 
 .nav-link:hover .nav-link-text-inner:nth-child(2) {
   transform: translateY(0);
+}
+
+/* Language Toggle */
+.lang-toggle {
+  background: #1a1a1a;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-left: 1rem;
+}
+
+.lang-toggle:hover {
+  background: #333;
+  transform: translateY(-2px);
 }
 
 /* Responsive */

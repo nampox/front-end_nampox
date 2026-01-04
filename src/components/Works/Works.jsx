@@ -1,39 +1,23 @@
 import './Works.css'
+import { useLanguage } from '../../context/LanguageContext'
 
 function Works() {
-  const projects = [
-    {
-      id: 1,
-      title: 'Project Alpha',
-      category: 'Web Design',
-      image: 'https://picsum.photos/600/400?random=1'
-    },
-    {
-      id: 2,
-      title: 'Project Beta',
-      category: 'Branding',
-      image: 'https://picsum.photos/600/400?random=2'
-    },
-    {
-      id: 3,
-      title: 'Project Gamma',
-      category: 'UI/UX Design',
-      image: 'https://picsum.photos/600/400?random=3'
-    },
-    {
-      id: 4,
-      title: 'Project Delta',
-      category: 'Development',
-      image: 'https://picsum.photos/600/400?random=4'
-    }
-  ]
+  const { t } = useLanguage()
+  
+  const translatedProjects = t('works.projects')
+  const projects = Array.isArray(translatedProjects) 
+    ? translatedProjects.map((project, index) => ({
+        ...project,
+        image: `https://picsum.photos/600/400?random=${index + 1}`
+      }))
+    : []
 
   return (
     <section id="works" className="works-section">
       <div className="works-content">
-        <h2 className="works-title">Our Works</h2>
+        <h2 className="works-title">{t('works.title')}</h2>
         <p className="works-subtitle">
-          Explore our latest projects and creative solutions
+          {t('works.subtitle')}
         </p>
         <div className="works-grid">
           {projects.map((project) => (

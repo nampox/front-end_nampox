@@ -1,0 +1,82 @@
+{
+  "header": {
+    "home": "Trang chủ",
+    "about": "Giới thiệu",
+    "works": "Dự án",
+    "contact": "Liên hệ"
+  },
+  "home": {
+    "headline1": "Backend Developer xây dựng",
+    "headline2": "hệ thống",
+    "headline3": "có khả năng",
+    "headline4": "mở rộng",
+    "headline5": "và đáng tin cậy",
+    "badgeTitle": "Lập trình viên độc lập",
+    "badgeText": "Kinh nghiệm thực chiến từ các dự án thực tế",
+    "servicesTags1": "BACKEND DEVELOPMENT / SYSTEM DESIGN / API",
+    "servicesTags2": "DATABASE OPTIMIZATION / CLOUD / SECURITY",
+    "scrollText": "CUỘN XUỐNG ĐỂ XEM THÊM • CUỘN XUỐNG ĐỂ XEM THÊM •",
+    "ctaButton": "Cách tôi làm việc",
+    "section2Title": "Nam Pox",
+    "section2Desc": "Tôi thiết kế và xây dựng hệ thống backend dựa trên nhu cầu thực tế",
+    "playWithSound": "Phát có âm thanh"
+  },
+  "about": {
+    "title1": "Về",
+    "title2": "Nampox?",
+    "intro": "Tôi xây dựng giải pháp số tập trung vào giá trị thực và trải nghiệm người dùng.",
+    "items": [
+      {
+        "id": "01",
+        "title": "Làm việc độc lập và có định hướng",
+        "desc": "Tôi chủ động trong mọi quyết định của mình, từ cách tiếp cận vấn đề đến cách triển khai giải pháp. Mỗi sản phẩm tôi làm ra đều phản ánh tư duy, trách nhiệm và tiêu chuẩn cá nhân của tôi."
+      },
+      {
+        "id": "02",
+        "title": "Biến suy nghĩ thành giải pháp thực tế",
+        "desc": "Tôi không chỉ dừng lại ở ý tưởng. Qua quá trình phân tích, thử nghiệm và điều chỉnh, tôi biến những suy nghĩ trừu tượng thành giải pháp có thể áp dụng và mang lại giá trị thực."
+      },
+      {
+        "id": "03",
+        "title": "Phát triển từ trải nghiệm cá nhân",
+        "desc": "Mỗi dự án, mỗi lần giao tiếp và mỗi vấn đề gặp phải đều giúp tôi hiểu rõ hơn về bản thân và cách mình tạo ra giá trị. Tôi liên tục học hỏi để hoàn thiện tư duy và kỹ năng của chính mình."
+      }
+    ]
+  },
+  "works": {
+    "title": "Dự án của tôi",
+    "subtitle": "Khám phá các dự án mới nhất và giải pháp sáng tạo của tôi",
+    "projects": [
+      {
+        "id": 1,
+        "title": "Dự án Alpha",
+        "category": "Phát triển Web"
+      },
+      {
+        "id": 2,
+        "title": "Dự án Beta",
+        "category": "Thiết kế Hệ thống"
+      },
+      {
+        "id": 3,
+        "title": "Dự án Gamma",
+        "category": "Phát triển API"
+      },
+      {
+        "id": 4,
+        "title": "Dự án Delta",
+        "category": "Backend Development"
+      }
+    ]
+  },
+  "contact": {
+    "title": "Liên hệ",
+    "subtitle": "Bạn có ý tưởng dự án? Hãy cùng tạo ra điều tuyệt vời.",
+    "namePlaceholder": "Họ và tên",
+    "emailPlaceholder": "Email của bạn",
+    "subjectPlaceholder": "Tiêu đề",
+    "messagePlaceholder": "Nội dung tin nhắn",
+    "submitButton": "Gửi tin nhắn"
+  }
+}
+

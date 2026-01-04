@@ -195,10 +195,11 @@
   gap: 0.15rem;
 }
 
-.stars {
-  color: #fbbf24;
-  font-size: 1rem;
-  letter-spacing: 2px;
+.badge-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1a1a1a;
 }
 
 .rating-text {

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import './Home.css'
+import { useLanguage } from '../../context/LanguageContext'
 
 // Ultra smooth scroll - easeOutExpo for instant response, smooth deceleration
 const smoothScrollTo = (targetY, duration = 500) => {
@@ -28,6 +29,7 @@ const smoothScrollTo = (targetY, duration = 500) => {
 }
 
 function Home() {
+  const { t } = useLanguage()
   const eyeRef = useRef(null)
   const pupilRef = useRef(null)
   const section1Ref = useRef(null)
@@ -212,24 +214,24 @@ function Home() {
           {/* Main Content */}
           <div className="home-main">
             <h1 className="home-headline">
-              Backend Developer crafting
+              {t('home.headline1')}
               <br />
-              <span className="highlight">scalable</span> and <span className="highlight">efficient</span> solutions
-          </h1>
+              <span className="highlight">{t('home.headline2')}</span> {t('home.headline3')} <span className="highlight">{t('home.headline4')}</span> {t('home.headline5')}
+            </h1>
             
             <div className="home-footer">
               <div className="rating-badge">
                 <div className="logo-mini">N</div>
                 <div className="rating-info">
-                  <div className="stars">★★★★★</div>
-                  <div className="rating-text">Rating 5, 24 reviews</div>
+                  <div className="badge-title">{t('home.badgeTitle')}</div>
+                  <div className="rating-text">{t('home.badgeText')}</div>
                 </div>
               </div>
               
               <div className="services-tags">
-                WEB DEVELOPMENT / SYSTEM DESIGN / API /
+                {t('home.servicesTags1')}
                 <br />
-                DATABASE OPTIMIZATION / CLOUD / SECURITY
+                {t('home.servicesTags2')}
               </div>
             </div>
           </div>
@@ -264,14 +266,14 @@ function Home() {
                 </defs>
                 <text>
                   <textPath href="#circlePath" className="rotating-text">
-                    SCROLL DOWN TO SEE MORE • SCROLL DOWN TO SEE MORE •
+                    {t('home.scrollText')}
                   </textPath>
                 </text>
               </svg>
             </div>
             
             <a href="#about" className="capabilities-btn">
-              Our Capabilities Deck
+              {t('home.ctaButton')}
             </a>
           </div>
         </div>
@@ -309,13 +311,13 @@ function Home() {
               <svg viewBox="0 0 24 24" fill="currentColor">
                 <path d="M8 5v14l11-7z"/>
               </svg>
-              <span>Play with sound</span>
+              <span>{t('home.playWithSound')}</span>
             </button>
           )}
           
           <div className="square-content">
-            <h2>Nam Pox</h2>
-            <p>Backend Developer crafting scalable and efficient solutions</p>
+            <h2>{t('home.section2Title')}</h2>
+            <p>{t('home.section2Desc')}</p>
           </div>
         </div>
       </div>

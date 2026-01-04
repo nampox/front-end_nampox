@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import './About.css'
+import { useLanguage } from '../../context/LanguageContext'
 
 // Ultra smooth scroll - easeOutExpo for instant response
 const smoothScrollTo = (targetY, duration = 500) => {
@@ -28,6 +29,7 @@ const smoothScrollTo = (targetY, duration = 500) => {
 }
 
 function About() {
+  const { t } = useLanguage()
   const sectionRef = useRef(null)
   const horizontalRef = useRef(null)
   const [isAutoScrolling, setIsAutoScrolling] = useState(false)
@@ -63,26 +65,15 @@ function About() {
     }
   }, [targetProgress])
 
-  const items = [
-    {
-      id: "01",
-      title: "Làm việc độc lập và có định hướng",
-      desc: "chủ động trong mọi quyết định của mình, từ cách tiếp cận vấn đề đến cách triển khai giải pháp. Mỗi sản phẩm tôi làm ra đều phản ánh tư duy, trách nhiệm và tiêu chuẩn cá nhân của tôi.",
-      bgColor: "rgb(247, 244, 244)"
-    },
-    {
-      id: "02",
-      title: "Biến suy nghĩ thành giải pháp thực tế",
-      desc: "Tôi không chỉ dừng lại ở ý tưởng. Qua quá trình phân tích, thử nghiệm và điều chỉnh, tôi biến những suy nghĩ trừu tượng thành giải pháp có thể áp dụng và mang lại giá trị thực.",
-      bgColor: "rgb(239, 251, 249)"
-    },
-    {
-      id: "03",
-      title: "Phát triển từ trải nghiệm cá nhân",
-      desc: "Mỗi dự án, mỗi lần giao tiếp và mỗi vấn đề gặp phải đều giúp tôi hiểu rõ hơn về bản thân và cách mình tạo ra giá trị. Tôi liên tục học hỏi để hoàn thiện tư duy và kỹ năng của chính mình.",
-      bgColor: "rgb(242, 237, 244)"
-    }
-  ]
+  // Get items from translations with colors
+  const translatedItems = t('about.items')
+  const bgColors = ["rgb(247, 244, 244)", "rgb(239, 251, 249)", "rgb(242, 237, 244)"]
+  const items = Array.isArray(translatedItems) 
+    ? translatedItems.map((item, index) => ({
+        ...item,
+        bgColor: bgColors[index] || bgColors[0]
+      }))
+    : []
 
   // Handle horizontal scroll within About section
   useEffect(() => {
@@ -294,8 +285,8 @@ function About() {
             transition={{ duration: 0.6, delay: 0.1, ease: [0.33, 1, 0.68, 1] }}
             viewport={{ amount: 0.3 }}
           >
-            What About <br />
-            <span className="title-highlight">Nampox?</span>
+            {t('about.title1')} <br />
+            <span className="title-highlight">{t('about.title2')}</span>
           </motion.h2>
           <motion.p 
             className="about-intro"
@@ -305,7 +296,7 @@ function About() {
             transition={{ duration: 0.6, delay: 0.2, ease: [0.33, 1, 0.68, 1] }}
             viewport={{ amount: 0.3 }}
           >
-            Chúng tôi giúp khách hàng tỏa sáng trên nền tảng số với những giải pháp sáng tạo và hiệu quả.
+            {t('about.intro')}
           </motion.p>
         </motion.div>
 
