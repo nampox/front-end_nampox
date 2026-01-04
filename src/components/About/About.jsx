@@ -66,20 +66,20 @@ function About() {
   const items = [
     {
       id: "01",
-      title: "We collaborate",
-      desc: "Chúng tôi làm việc như một tập thể, kết hợp chặt chẽ với khách hàng để hiểu rõ nhu cầu và mục tiêu của họ.",
+      title: "Làm việc độc lập và có định hướng",
+      desc: "chủ động trong mọi quyết định của mình, từ cách tiếp cận vấn đề đến cách triển khai giải pháp. Mỗi sản phẩm tôi làm ra đều phản ánh tư duy, trách nhiệm và tiêu chuẩn cá nhân của tôi.",
       bgColor: "rgb(247, 244, 244)"
     },
     {
       id: "02",
-      title: "Translate research into solutions",
-      desc: "Biến nghiên cứu thành giải pháp thực tế. Chúng tôi phân tích dữ liệu và xu hướng thị trường.",
+      title: "Biến suy nghĩ thành giải pháp thực tế",
+      desc: "Tôi không chỉ dừng lại ở ý tưởng. Qua quá trình phân tích, thử nghiệm và điều chỉnh, tôi biến những suy nghĩ trừu tượng thành giải pháp có thể áp dụng và mang lại giá trị thực.",
       bgColor: "rgb(239, 251, 249)"
     },
     {
       id: "03",
-      title: "Global creative team",
-      desc: "Đội ngũ sáng tạo toàn cầu với đa dạng góc nhìn và kinh nghiệm từ khắp nơi trên thế giới.",
+      title: "Phát triển từ trải nghiệm cá nhân",
+      desc: "Mỗi dự án, mỗi lần giao tiếp và mỗi vấn đề gặp phải đều giúp tôi hiểu rõ hơn về bản thân và cách mình tạo ra giá trị. Tôi liên tục học hỏi để hoàn thiện tư duy và kỹ năng của chính mình.",
       bgColor: "rgb(242, 237, 244)"
     }
   ]
