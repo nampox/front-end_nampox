@@ -243,6 +243,25 @@ function About() {
   const translateDistance = isMobile ? 800 : 2500
   const horizontalTranslate = currentProgress * translateDistance
 
+  // Calculate box position for each item based on scroll progress
+  // Box moves from left to right as item passes through center of screen
+  const getBoxTranslateX = (index) => {
+    if (isMobile) return 0 // No parallax on mobile
+    
+    const boxMaxTranslate = 330 // Di chuyển tối đa 500px sang phải
+    
+    // Each item has its own progress range
+    const itemCount = items.length
+    const itemProgressStart = index / (itemCount + 1)
+    const itemProgressEnd = (index + 1.5) / (itemCount + 1)
+    
+    // Calculate how far through this item's range we are
+    let itemProgress = (currentProgress - itemProgressStart) / (itemProgressEnd - itemProgressStart)
+    itemProgress = Math.max(0, Math.min(1, itemProgress))
+    
+    return itemProgress * boxMaxTranslate
+  }
+
   return (
     <section id="about" className="about-section" ref={sectionRef}>
       {/* Single horizontal scrolling container for everything */}
@@ -291,12 +310,28 @@ function About() {
         </motion.div>
 
         {/* ITEMS - Simple render, no animation conflict */}
-        {items.map((item) => (
+        {items.map((item, index) => (
           <div 
             key={item.id} 
             className="about-item"
             style={{ backgroundColor: item.bgColor }}
           >
+            <div 
+              className="item-image-box"
+              style={{ 
+                transform: `translateX(${getBoxTranslateX(index)}px)`,
+                transition: 'transform 0.1s ease-out'
+              }}
+            >
+              <video 
+                src={`/about/${index + 1}.mp4`}
+                autoPlay 
+                muted 
+                loop 
+                playsInline
+                className="item-video"
+              />
+            </div>
             <span className="item-number">{item.id}</span>
             <h3 className="item-title">{item.title}</h3>
             <p className="item-desc">{item.desc}</p>
