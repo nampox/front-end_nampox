@@ -212,6 +212,38 @@
   }
 }
 
+/* WE CREATE Section */
+.we-create-section {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  padding: 4rem 2rem;
+}
+
+.we-create-text {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: clamp(4rem, 12vw, 12rem);
+  font-weight: 900;
+  color: #1a1a1a;
+  text-align: center;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .we-create-section {
+    min-height: 80vh;
+    padding: 3rem 1rem;
+  }
+  
+  .we-create-text {
+    font-size: clamp(3rem, 15vw, 8rem);
+  }
+}
+
 /* Animation Enhancement */
 @media (prefers-reduced-motion: no-preference) {
   .about-item {

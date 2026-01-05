@@ -32,6 +32,7 @@ function About() {
   const { t } = useLanguage()
   const sectionRef = useRef(null)
   const horizontalRef = useRef(null)
+  const weCreateRef = useRef(null)
   const [isAutoScrolling, setIsAutoScrolling] = useState(false)
   const [targetProgress, setTargetProgress] = useState(0) // Target value (0 to 1)
   const [currentProgress, setCurrentProgress] = useState(0) // Actual animated value
@@ -148,18 +149,30 @@ function About() {
       const sectionHeight = sectionRef.current?.offsetHeight || 0
       const homeSection2 = document.querySelector('.home-section-2')
       const section2Top = homeSection2?.offsetTop || 0
+      const weCreateTop = weCreateRef.current?.offsetTop || 0
       const worksSection = document.getElementById('works')
-      const worksTop = worksSection?.offsetTop || (sectionTop + sectionHeight)
+      const worksTop = worksSection?.offsetTop || (weCreateTop + (weCreateRef.current?.offsetHeight || 0))
 
       const direction = e.deltaY > 0 ? 'down' : 'up'
 
       // Check positions
       const isAtAboutTop = Math.abs(scrollY - sectionTop) < TOLERANCE
+      const isAtWeCreateTop = Math.abs(scrollY - weCreateTop) < TOLERANCE
       const isAtWorksTop = Math.abs(scrollY - worksTop) < TOLERANCE
-      const isInAboutSection = scrollY >= sectionTop - TOLERANCE && scrollY <= worksTop + TOLERANCE
+      const isInAboutSection = scrollY >= sectionTop - TOLERANCE && scrollY <= weCreateTop + TOLERANCE
 
-      // Coming from Works section, scroll UP → snap to About and set horizontal to max
+      // Coming from Works section, scroll UP → go to WE CREATE section
       if (isAtWorksTop && direction === 'up') {
+        e.preventDefault()
+        setIsAutoScrolling(true)
+        startCooldown(600)
+        smoothScrollTo(weCreateTop, 500)
+        setTimeout(() => setIsAutoScrolling(false), 600)
+        return
+      }
+
+      // Coming from WE CREATE section, scroll UP → snap to About and set horizontal to max
+      if (isAtWeCreateTop && direction === 'up') {
         e.preventDefault()
         setTargetProgress(1)
         setCurrentProgress(1) // Instant set for snap
@@ -208,8 +221,16 @@ function About() {
             setTargetProgress(prev => Math.min(1, prev + SCROLL_SPEED))
             return
           }
-          // Horizontal at 1 → allow normal scroll to Works
-          return
+          // Horizontal at 1 → scroll to WE CREATE section
+          if (targetProgress >= 0.99) {
+            e.preventDefault()
+            const weCreateTop = weCreateRef.current?.offsetTop || 0
+            setIsAutoScrolling(true)
+            startCooldown(600)
+            smoothScrollTo(weCreateTop, 500)
+            setTimeout(() => setIsAutoScrolling(false), 600)
+            return
+          }
         }
       }
     }
@@ -254,82 +275,97 @@ function About() {
   }
 
   return (
-    <section id="about" className="about-section" ref={sectionRef}>
-      {/* Single horizontal scrolling container for everything */}
-      <div 
-        className="about-horizontal-wrapper"
-        ref={horizontalRef}
-        style={{ 
-          transform: `translateX(-${horizontalTranslate}px)`
-        }}
-      >
-        {/* LEFT COLUMN: Title - Fade in from bottom */}
-        <motion.div 
-          className="about-left"
-          initial={{ opacity: 0, y: 80 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 80 }}
-          transition={{ 
-            duration: 0.8, 
-            ease: [0.25, 0.1, 0.25, 1],
-            opacity: { duration: 0.6 },
-            y: { duration: 0.8, ease: [0.33, 1, 0.68, 1] }
+    <>
+      <section id="about" className="about-section" ref={sectionRef}>
+        {/* Single horizontal scrolling container for everything */}
+        <div 
+          className="about-horizontal-wrapper"
+          ref={horizontalRef}
+          style={{ 
+            transform: `translateX(-${horizontalTranslate}px)`
           }}
-          viewport={{ amount: 0.3 }}
         >
-          <motion.h2 
-            className="about-title"
-            initial={{ opacity: 0, y: 40 }}
+          {/* LEFT COLUMN: Title - Fade in from bottom */}
+          <motion.div 
+            className="about-left"
+            initial={{ opacity: 0, y: 80 }}
             whileInView={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 40 }}
-            transition={{ duration: 0.6, delay: 0.1, ease: [0.33, 1, 0.68, 1] }}
+            exit={{ opacity: 0, y: 80 }}
+            transition={{ 
+              duration: 0.8, 
+              ease: [0.25, 0.1, 0.25, 1],
+              opacity: { duration: 0.6 },
+              y: { duration: 0.8, ease: [0.33, 1, 0.68, 1] }
+            }}
             viewport={{ amount: 0.3 }}
           >
-            {t('about.title1')} <br />
-            <span className="title-highlight">{t('about.title2')}</span>
-          </motion.h2>
-          <motion.p 
-            className="about-intro"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 30 }}
-            transition={{ duration: 0.6, delay: 0.2, ease: [0.33, 1, 0.68, 1] }}
-            viewport={{ amount: 0.3 }}
-          >
-            {t('about.intro')}
-          </motion.p>
-        </motion.div>
-
-        {/* ITEMS - Simple render, no animation conflict */}
-        {items.map((item, index) => (
-          <div 
-            key={item.id} 
-            className="about-item"
-            style={{ backgroundColor: item.bgColor }}
-          >
-            <div 
-              className="item-image-box"
-              style={{ 
-                transform: `translateX(${getBoxTranslateX(index)}px)`,
-                transition: 'transform 0.1s ease-out'
-              }}
+            <motion.h2 
+              className="about-title"
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 40 }}
+              transition={{ duration: 0.6, delay: 0.1, ease: [0.33, 1, 0.68, 1] }}
+              viewport={{ amount: 0.3 }}
             >
-              <video 
-                src={`/about/${index + 1}.mp4`}
-                autoPlay 
-                muted 
-                loop 
-                playsInline
-                className="item-video"
-              />
+              {t('about.title1')} <br />
+              <span className="title-highlight">{t('about.title2')}</span>
+            </motion.h2>
+            <motion.p 
+              className="about-intro"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 30 }}
+              transition={{ duration: 0.6, delay: 0.2, ease: [0.33, 1, 0.68, 1] }}
+              viewport={{ amount: 0.3 }}
+            >
+              {t('about.intro')}
+            </motion.p>
+          </motion.div>
+
+          {/* ITEMS - Simple render, no animation conflict */}
+          {items.map((item, index) => (
+            <div 
+              key={item.id} 
+              className="about-item"
+              style={{ backgroundColor: item.bgColor }}
+            >
+              <div 
+                className="item-image-box"
+                style={{ 
+                  transform: `translateX(${getBoxTranslateX(index)}px)`,
+                  transition: 'transform 0.1s ease-out'
+                }}
+              >
+                <video 
+                  src={`/about/${index + 1}.mp4`}
+                  autoPlay 
+                  muted 
+                  loop 
+                  playsInline
+                  className="item-video"
+                />
+              </div>
+              <span className="item-number">{item.id}</span>
+              <h3 className="item-title">{item.title}</h3>
+              <p className="item-desc">{item.desc}</p>
             </div>
-            <span className="item-number">{item.id}</span>
-            <h3 className="item-title">{item.title}</h3>
-            <p className="item-desc">{item.desc}</p>
-          </div>
-        ))}
-      </div>
-    </section>
+          ))}
+        </div>
+      </section>
+
+      {/* WE CREATE Section */}
+      <section className="we-create-section" ref={weCreateRef}>
+        <motion.h2 
+          className="we-create-text"
+          initial={{ opacity: 0, scale: 0.8 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, ease: [0.33, 1, 0.68, 1] }}
+          viewport={{ amount: 0.5 }}
+        >
+          {t('about.weCreate')}
+        </motion.h2>
+      </section>
+    </>
   )
 }
 
