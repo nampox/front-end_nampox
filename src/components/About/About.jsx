@@ -38,23 +38,9 @@ function About() {
   const [currentProgress, setCurrentProgress] = useState(0) // Actual animated value
   const animationRef = useRef(null)
 
-  // Mobile item center detection
-  const [activeMobileItem, setActiveMobileItem] = useState(null)
-  const itemRefs = useRef([])
-
   // Black overlay animation states
   const [isBlackOverlayVisible, setIsBlackOverlayVisible] = useState(false)
   const [showWeCreateText, setShowWeCreateText] = useState(false)
-
-  // Get items from translations with colors
-  const translatedItems = t('about.items')
-  const bgColors = ["rgb(247, 244, 244)", "rgb(239, 251, 249)", "rgb(242, 237, 244)"]
-  const items = Array.isArray(translatedItems)
-    ? translatedItems.map((item, index) => ({
-        ...item,
-        bgColor: bgColors[index] || bgColors[0]
-      }))
-    : []
 
   // Smooth lerp animation for floating effect
   useEffect(() => {
@@ -83,42 +69,6 @@ function About() {
       }
     }
   }, [targetProgress])
-
-  // Mobile item center detection
-  useEffect(() => {
-    if (typeof window === 'undefined' || window.innerWidth > 768) return
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          const itemIndex = itemRefs.current.indexOf(entry.target)
-          if (itemIndex === -1) return
-
-          if (entry.isIntersecting) {
-            console.log('Item', itemIndex, 'intersecting') // Debug
-            setActiveMobileItem(itemIndex)
-          } else {
-            console.log('Item', itemIndex, 'not intersecting') // Debug
-            if (activeMobileItem === itemIndex) {
-              setActiveMobileItem(null)
-            }
-          }
-        })
-      },
-      {
-        threshold: 0.5, // Trigger when 50% of item is visible
-        rootMargin: '-40% 0px -40% 0px' // Smaller margin
-      }
-    )
-
-    itemRefs.current.forEach((item) => {
-      if (item) observer.observe(item)
-    })
-
-    return () => {
-      observer.disconnect()
-    }
-  }, [items.length])
 
   // WE CREATE Section animation trigger
   useEffect(() => {
@@ -162,6 +112,16 @@ function About() {
       window.removeEventListener('scroll', handleScroll)
     }
   }, [isBlackOverlayVisible, showWeCreateText])
+
+  // Get items from translations with colors
+  const translatedItems = t('about.items')
+  const bgColors = ["rgb(247, 244, 244)", "rgb(239, 251, 249)", "rgb(242, 237, 244)"]
+  const items = Array.isArray(translatedItems) 
+    ? translatedItems.map((item, index) => ({
+        ...item,
+        bgColor: bgColors[index] || bgColors[0]
+      }))
+    : []
 
   // Handle horizontal scroll within About section
   useEffect(() => {
@@ -411,33 +371,27 @@ function About() {
 
           {/* ITEMS - Simple render, no animation conflict */}
           {items.map((item, index) => (
-            <div
-              key={item.id}
-              ref={(el) => (itemRefs.current[index] = el)}
+            <div 
+              key={item.id} 
               className="about-item"
               style={{ backgroundColor: item.bgColor }}
             >
-              <motion.div
+              <div 
                 className="item-image-box"
-                animate={{
-                  x: window.innerWidth <= 768
-                    ? (activeMobileItem === index ? 80 : 0)
-                    : getBoxTranslateX(index)
-                }}
-                transition={{
-                  duration: 0.6,
-                  ease: [0.33, 1, 0.68, 1]
+                style={{ 
+                  transform: `translateX(${getBoxTranslateX(index)}px)`,
+                  transition: 'transform 0.1s ease-out'
                 }}
               >
-                <video
+                <video 
                   src={`/about/${index + 1}.mp4`}
-                  autoPlay
-                  muted
-                  loop
+                  autoPlay 
+                  muted 
+                  loop 
                   playsInline
                   className="item-video"
                 />
-              </motion.div>
+              </div>
               <span className="item-number">{item.id}</span>
               <h3 className="item-title">{item.title}</h3>
               <p className="item-desc">{item.desc}</p>
