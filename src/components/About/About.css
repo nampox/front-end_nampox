@@ -210,6 +210,12 @@
   .item-desc {
     font-size: 0.9rem;
   }
+
+  .item-image-box{
+    width: 145px;
+    height: 70px;
+    margin-bottom: 10px;
+  }
 }
 
 /* WE CREATE Section */
