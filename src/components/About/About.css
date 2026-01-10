@@ -220,6 +220,8 @@
   justify-content: center;
   background: #fff;
   padding: 4rem 2rem;
+  position: relative;
+  overflow: hidden;
 }
 
 .we-create-text {
@@ -241,6 +243,73 @@
   
   .we-create-text {
     font-size: clamp(3rem, 15vw, 8rem);
+  }   
+}
+
+/* Scrolling Text Background */
+.scrolling-text-container {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  padding: 2vh 0;
+}
+
+.scrolling-text-row {
+  overflow: hidden;
+  position: relative;
+  min-height: 25vh; /* Tăng lên 25vh để chứa đủ text lớn */
+}
+
+.scrolling-text-inner {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  transform: skewY(15deg); /* Các hàng chạy nghiêng */
+}
+
+.scrolling-text-inner span {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 900;
+  font-size: clamp(12vw, 15vw, 20vw);
+  letter-spacing: -0.03em;
+  line-height: 1.0; /* Giảm lại để tránh crop */
+  color: #F6C7B6;
+  white-space: nowrap;
+  padding-right: 4rem; /* Khoảng nối mềm */
+}
+
+/* CSS Animations for smooth marquee */
+@keyframes marqueeLeft {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.scroll-left {
+  animation: marqueeLeft 12s linear infinite;
+}
+
+.scroll-right {
+  animation: marqueeLeft 12s linear infinite reverse;
+}
+
+/* Mobile adaptation */
+@media (max-width: 768px) {
+  .scrolling-text-container {
+    gap: 2vh;        /* Giảm từ 4vh → 2vh để rất sát */
+    padding: 4vh 0;  /* Giảm padding để tiết kiệm space */
+  }
+
+  .scrolling-text-inner span {
+    font-size: clamp(18vw, 22vw, 25vw);
+    letter-spacing: -0.02em; /* Slightly less compressed on mobile */
+    padding-right: 2rem; /* Giảm padding trên mobile */
   }
 }
 
@@ -249,8 +318,12 @@
   .about-item {
     will-change: transform, opacity;
   }
-  
+
   .about-horizontal-wrapper {
+    will-change: transform;
+  }
+
+  .scrolling-text-inner {
     will-change: transform;
   }
 }

@@ -38,6 +38,10 @@ function About() {
   const [currentProgress, setCurrentProgress] = useState(0) // Actual animated value
   const animationRef = useRef(null)
 
+  // Black overlay animation states
+  const [isBlackOverlayVisible, setIsBlackOverlayVisible] = useState(false)
+  const [showWeCreateText, setShowWeCreateText] = useState(false)
+
   // Smooth lerp animation for floating effect
   useEffect(() => {
     const lerp = (start, end, factor) => start + (end - start) * factor
@@ -65,6 +69,49 @@ function About() {
       }
     }
   }, [targetProgress])
+
+  // WE CREATE Section animation trigger
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollY = window.scrollY
+      const weCreateTop = weCreateRef.current?.offsetTop || 0
+      const weCreateHeight = weCreateRef.current?.offsetHeight || 0
+      const windowHeight = window.innerHeight
+
+      // Check if WE CREATE section is in viewport
+      const sectionInView = scrollY + windowHeight / 2 >= weCreateTop &&
+                          scrollY < weCreateTop + weCreateHeight
+
+      // Check if WE CREATE section is out of viewport (scrolled past it)
+      const sectionOutOfView = scrollY >= weCreateTop + weCreateHeight ||
+                              scrollY + windowHeight < weCreateTop
+
+      if (sectionInView && !isBlackOverlayVisible && !showWeCreateText) {
+        // Trigger animation when section comes into view
+        setIsBlackOverlayVisible(true)
+        setShowWeCreateText(false)
+
+        // Show black overlay for 1 second, then hide it and show text
+        setTimeout(() => {
+          setIsBlackOverlayVisible(false)
+          setTimeout(() => {
+            setShowWeCreateText(true)
+          }, 600) // Small delay for smooth transition
+        }, 600)
+      } else if (sectionOutOfView && (isBlackOverlayVisible || showWeCreateText)) {
+        // Reset animation when section goes out of view
+        setIsBlackOverlayVisible(false)
+        setShowWeCreateText(false)
+      }
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    handleScroll() // Check initial position
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [isBlackOverlayVisible, showWeCreateText])
 
   // Get items from translations with colors
   const translatedItems = t('about.items')
@@ -355,17 +402,75 @@ function About() {
 
       {/* WE CREATE Section */}
       <section className="we-create-section" ref={weCreateRef}>
-        <motion.h2 
+        {/* Black overlay animation */}
+        <motion.div
+          className="we-create-overlay"
+          initial={{ opacity: 0 }}
+          animate={{
+            opacity: isBlackOverlayVisible ? 1 : 0,
+            backgroundColor: isBlackOverlayVisible ? '#000' : 'transparent'
+          }}
+          transition={{
+            opacity: { duration: 0.5, ease: 'easeInOut' },
+            backgroundColor: { duration: 0.5, ease: 'easeInOut' }
+          }}
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 10,
+            pointerEvents: isBlackOverlayVisible ? 'auto' : 'none',
+            overflow: 'hidden'
+          }}
+        >
+          {isBlackOverlayVisible && <ScrollingTextBackground />}
+        </motion.div>
+
+        <motion.h2
           className="we-create-text"
           initial={{ opacity: 0, scale: 0.8 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, ease: [0.33, 1, 0.68, 1] }}
-          viewport={{ amount: 0.5 }}
+          animate={showWeCreateText ? {
+            opacity: 1,
+            scale: 1
+          } : {
+            opacity: 0,
+            scale: 0.8
+          }}
+          transition={{
+            duration: 0.8,
+            ease: [0.33, 1, 0.68, 1],
+            delay: showWeCreateText ? 0 : 0
+          }}
         >
           {t('about.weCreate')}
         </motion.h2>
       </section>
     </>
+  )
+}
+
+// Scrolling Text Background Component
+function ScrollingTextBackground() {
+  const text = "WE CREATE WE CREATE WE CREATE WE CREATE WE CREATE WE CREATE WE CREATE WE CREATE " // Dãy dài WE CREATE
+  const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768
+  const rows = Array.from({ length: isMobile ? 4 : 3  }, (_, i) => i) // 4 rows mobile, 3 rows desktop
+
+  return (
+    <div className="scrolling-text-container">
+      {rows.map((rowIndex) => (
+        <div
+          key={rowIndex}
+          className="scrolling-text-row"
+        >
+          <div className={`scrolling-text-inner ${rowIndex % 2 === 0 ? 'scroll-left' : 'scroll-right'}`}>
+            <span>{text}</span>
+            <span>{text}</span>
+          </div>
+        </div>
+      ))}
+    </div>
   )
 }
 
