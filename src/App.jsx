@@ -5,9 +5,7 @@ const HOLD_DURATION_MS = 8000
 const HOLD_PROGRESS_DELAY_MS = 1500
 
 function App() {
-  // Quản lý xem đang ở layer nào: 'opening' | 'letter' | 'timeline'
   const [currentLayer, setCurrentLayer] = useState('opening')
-
   const [mood] = useState('quiet')
   const [letterStep, setLetterStep] = useState(1) // 1: hold, 2: distance, 3: open
   const [readyForTimeline, setReadyForTimeline] = useState(false)
@@ -53,7 +51,7 @@ function App() {
           </div>
         </div>
 
-        {/* Start button (was scroll hint) */}
+        {/* Start button */}
         <div
           className="scroll-hint cursor-pointer"
           onClick={handleStart}
@@ -86,11 +84,11 @@ function LetterLayer({ mood, letterStep, setLetterStep, readyForTimeline, setRea
       )}
 
       {letterStep === 2 && (
-            <MistStep
-              onComplete={() => {
-                setLetterStep(3)
-              }}
-            />
+        <DistanceStep
+          onComplete={() => {
+            setLetterStep(3)
+          }}
+        />
       )}
 
       {letterStep === 3 && (
@@ -102,9 +100,9 @@ function LetterLayer({ mood, letterStep, setLetterStep, readyForTimeline, setRea
           }}
         />
       )}
-      </section>
-    )
-  }
+    </section>
+  )
+}
 
 // STEP 2.1 – BẤM VÀ ĐỢI (ĐƠN GIẢN HÓA TỪ GIỮ CHUỘT)
 function LetterHoldStep({ onComplete }) {
@@ -154,136 +152,74 @@ function LetterHoldStep({ onComplete }) {
   )
 }
 
-// === STEP 2 MỚI: MIST EFFECT (SƯƠNG MỜ) ===
-function MistStep({ onComplete }) {
-  const canvasRef = useRef(null)
-  const [opacity, setOpacity] = useState(1)
-  const [clearedPercent, setClearedPercent] = useState(0)
-  const [finished, setFinished] = useState(false)
+// STEP 2.2 – KÉO KHOẢNG CÁCH (TỰ ĐỘNG CHẠY)
+function DistanceStep({ onComplete }) {
+  const [progress, setProgress] = useState(0) // 0 → 1
+  const [completed, setCompleted] = useState(false)
 
+  // Tự động kéo hai chấm lại gần nhau theo thời gian
   useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-    const ctx = canvas.getContext('2d', { willReadFrequently: true })
-    let animationFrameId
+    if (completed) return
 
-    const handleResize = () => {
-      canvas.width = window.innerWidth
-      canvas.height = window.innerHeight
-      ctx.fillStyle = '#0a0a0d'
-      ctx.fillRect(0, 0, canvas.width, canvas.height)
-    }
+    const duration = 5000 // 5s để đi từ 0 -> 1
+    const start = Date.now()
 
-    handleResize()
-    window.addEventListener('resize', handleResize)
+    const tick = () => {
+      const elapsed = Date.now() - start
+      const t = Math.min(elapsed / duration, 1)
+      const eased = 1 - Math.pow(1 - t, 3) // ease-out nhẹ
+      setProgress(eased)
 
-    const brushRadius = 60
-
-    const draw = (x, y) => {
-      if (finished) return
-      ctx.save()
-      ctx.globalCompositeOperation = 'destination-out'
-      ctx.beginPath()
-      const radgrad = ctx.createRadialGradient(x, y, brushRadius * 0.2, x, y, brushRadius)
-      radgrad.addColorStop(0, 'rgba(0,0,0,1)')
-      radgrad.addColorStop(1, 'rgba(0,0,0,0)')
-      ctx.fillStyle = radgrad
-      ctx.arc(x, y, brushRadius, 0, Math.PI * 2)
-      ctx.fill()
-      ctx.restore()
-    }
-
-    const handleMove = (e) => {
-      if (!canvas) return
-      e.preventDefault()
-      const rect = canvas.getBoundingClientRect()
-      let clientX, clientY
-      if (e.touches && e.touches.length > 0) {
-        clientX = e.touches[0].clientX
-        clientY = e.touches[0].clientY
-      } else {
-        clientX = e.clientX
-        clientY = e.clientY
+      if (t < 1) {
+        requestAnimationFrame(tick)
+      } else if (!completed) {
+        setCompleted(true)
+        // Cho ánh sáng lan + nhạc nâng nhẹ rồi mới sang bước 3
+        setTimeout(() => {
+          onComplete?.()
+        }, 1600)
       }
-      const x = clientX - rect.left
-      const y = clientY - rect.top
-      draw(x, y)
     }
 
-    canvas.addEventListener('mousemove', handleMove)
-    canvas.addEventListener('touchmove', handleMove, { passive: false })
-
-    let frameCount = 0
-    const checkInterval = 30
-
-    const loop = () => {
-      if (finished) return
-      ctx.globalCompositeOperation = 'source-over'
-      ctx.fillStyle = 'rgba(10, 10, 13, 0.015)'
-      ctx.fillRect(0, 0, canvas.width, canvas.height)
-
-      frameCount++
-      if (frameCount % checkInterval === 0) {
-        const w = canvas.width
-        const h = canvas.height
-        const checkW = Math.floor(w * 0.6)
-        const checkH = Math.floor(h * 0.6)
-        const startX = Math.floor(w * 0.2)
-        const startY = Math.floor(h * 0.2)
-        try {
-          const imageData = ctx.getImageData(startX, startY, checkW, checkH)
-          const data = imageData.data
-          let transparentPixels = 0
-          for (let i = 0; i < data.length; i += 4 * 10) {
-            if (data[i + 3] < 150) {
-              transparentPixels++
-            }
-          }
-          const totalChecked = data.length / (4 * 10)
-          const percent = transparentPixels / totalChecked
-          setClearedPercent(percent)
-          if (percent > 0.55) {
-            setFinished(true)
-            setOpacity(0)
-            setTimeout(() => {
-              onComplete?.()
-            }, 1000)
-            return
-          }
-        } catch (err) {
-          // getImageData can throw if canvas is tainted; ignore gracefully
-          // console.warn(err)
-        }
-      }
-
-      animationFrameId = requestAnimationFrame(loop)
-    }
-
-    loop()
-
-    return () => {
-      window.removeEventListener('resize', handleResize)
-      canvas.removeEventListener('mousemove', handleMove)
-      canvas.removeEventListener('touchmove', handleMove)
-      cancelAnimationFrame(animationFrameId)
-    }
-  }, [finished, onComplete])
+    const id = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(id)
+  }, [completed, onComplete])
 
   return (
-    <div className="letter-step letter-step--mist">
-      <div className="mist-underlay">
-        <div className="mist-envelope-hint" />
-        <p className="mist-hint-text" style={{ opacity: Math.max(0, 1 - clearedPercent * 2) }}>
-          Có gì đó đang ẩn giấu...<br/>
-          <span style={{ fontSize: '0.8em', opacity: 0.7 }}>(Lau nhẹ màn hình để hơi ấm lan tỏa)</span>
+    <div className="letter-step letter-step--distance">
+      <div className="letter-center">
+        <p className="distance-text">
+          Khoảng cách không phải lúc nào cũng xa.
         </p>
-      </div>
 
-      <canvas
-        ref={canvasRef}
-        className="mist-canvas"
-        style={{ opacity: opacity, transition: 'opacity 1s ease' }}
-      />
+        <div className="distance-track">
+          {/* Vệt sáng rất mảnh */}
+          <div
+            className="distance-trail"
+            style={{
+              transform: `scaleX(${Math.max(progress, 0.02)})`,
+            }}
+          />
+
+          {/* Hai chấm sáng */}
+          <div className="distance-dot distance-dot--left" />
+          <div
+            className={`distance-dot distance-dot--right ${completed ? 'distance-dot--merged' : ''}`}
+            style={{
+              transform: `translateX(${-50 * (1 - progress)}%)`,
+            }}
+          />
+
+          {completed && <div className="distance-glow" />}
+        </div>
+
+        {completed && (
+          <p className="distance-message">
+            Chỉ là…<br />
+            chưa đủ gần.
+          </p>
+        )}
+      </div>
     </div>
   )
 }
