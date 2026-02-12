@@ -14,6 +14,7 @@ function App() {
   // Flow: 1 hold -> 2 mist -> 2.5 gallery -> 3 timeline -> 4 open
   const [letterStep, setLetterStep] = useState(1)
   const [isWarm, setIsWarm] = useState(false)
+  const [isMusicPausedByUser, setIsMusicPausedByUser] = useState(false)
 
   // Đánh dấu người quay lại
   const [isReturning, setIsReturning] = useState(false)
@@ -99,6 +100,18 @@ function App() {
     }, stepMs)
   }
 
+  const handleToggleMusic = () => {
+    if (!audioRef.current) return
+
+    if (audioRef.current.paused) {
+      audioRef.current.play().catch(e => console.log('Resume bg music failed', e))
+      setIsMusicPausedByUser(false)
+    } else {
+      audioRef.current.pause()
+      setIsMusicPausedByUser(true)
+    }
+  }
+
   return (
     <div className={`app ${isWarm ? 'app--warm' : ''}`}>
 
@@ -150,13 +163,15 @@ function App() {
           isWarm={isWarm}
           setIsWarm={setIsWarm}
           onVoicePlayingChange={handleVoicePlayingChange}
+          onToggleMusic={handleToggleMusic}
+          isMusicPaused={isMusicPausedByUser}
         />
       </div>
     </div>
   )
 }
 
-function LetterLayer({ letterStep, setLetterStep, isWarm, setIsWarm, onVoicePlayingChange }) {
+function LetterLayer({ letterStep, setLetterStep, isWarm, setIsWarm, onVoicePlayingChange, onToggleMusic, isMusicPaused }) {
   return (
     <section className={`layer-letter ${isWarm ? 'layer-letter--warm' : 'layer-letter--quiet'}`}>
       
@@ -189,6 +204,8 @@ function LetterLayer({ letterStep, setLetterStep, isWarm, setIsWarm, onVoicePlay
           isWarm={isWarm}
           onOpen={() => setIsWarm(true)}
           onVoicePlayingChange={onVoicePlayingChange}
+          onToggleMusic={onToggleMusic}
+          isMusicPaused={isMusicPaused}
         />
       )}
     </section>
@@ -655,7 +672,7 @@ function TimelineStep({ onComplete }) {
 }
 
 // === STEP 4: CLIMAX (FLASHBACK + OPEN + VOICE) ===
-function LetterOpenStep({ onOpen, isWarm, onVoicePlayingChange }) {
+function LetterOpenStep({ onOpen, isWarm, onVoicePlayingChange, onToggleMusic, isMusicPaused }) {
   const [canOpen, setCanOpen] = useState(false)
   const [isFlashing, setIsFlashing] = useState(false) // Đang tua nhanh ký ức
   const [flashIndex, setFlashIndex] = useState(0)
@@ -741,6 +758,17 @@ function LetterOpenStep({ onOpen, isWarm, onVoicePlayingChange }) {
                 <div className="voice-divider"></div>
                 <p className="voice-label">Có điều này anh muốn nói...</p>
                 <VoicePlayer src="/voice.mp3" onPlayingChange={onVoicePlayingChange} />
+
+                <p className="music-hint-text">
+                  Nếu em không nghe rõ thì hãy&nbsp;
+                  <button
+                    type="button"
+                    className="music-toggle-button"
+                    onClick={onToggleMusic}
+                  >
+                    {isMusicPaused ? 'bật lại nhạc nhé' : 'tắt nhạc nền nhé'}
+                  </button>
+                </p>
              </div>
           </div>
         )}

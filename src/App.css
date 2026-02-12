@@ -469,6 +469,29 @@ body, html {
   color: var(--text-dark); margin-bottom: 1rem; opacity: 0.7;
 }
 
+.music-hint-text {
+  margin-top: 0.75rem;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.8rem;
+  color: var(--text-dark);
+  opacity: 0.75;
+}
+
+.music-toggle-button {
+  background: transparent;
+  border: none;
+  color: #b35b5b;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.8rem;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+}
+
+.music-toggle-button:hover {
+  color: #8c3f3f;
+}
+
 .simple-audio-player {
   display: flex; align-items: center; gap: 1rem;
   background: rgba(255,255,255,0.6); padding: 0.8rem 1.5rem;
