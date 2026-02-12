@@ -684,7 +684,10 @@ function LetterOpenStep({ onOpen, isWarm, onVoicePlayingChange, onToggleMusic, i
     "Anh không giỏi nói những lời hoa mỹ,",
     "cũng chưa cho em được những điều rực rỡ nhất.",
     "Nhưng anh sẽ luôn là người đồng hành cùng em,",
-    "bên em khi em cần",
+    "bên em khi em cần.",
+    "Đối với anh,",
+    "Được gặp em là một sự may mắn,",
+    "được yêu em nữa thì ông trời đã quá ưu ái anh rồi.",
     "Cảm ơn em vì đã là một phần đời của anh.",
     "Yêu em."
   ]
