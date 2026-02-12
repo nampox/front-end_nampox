@@ -201,7 +201,7 @@ body, html {
 .letter-content-container {
   margin-top: 2rem;
   text-align: center;
-  max-width: 600px;
+  max-width: 800px;
   padding: 0 20px;
   z-index: 30;
   flex-shrink: 0;
@@ -224,6 +224,7 @@ body, html {
   .bg-blur-shape { width: 200px; height: 200px; }
   .typewriter-line { font-size: 1.2rem; }
   .envelope { width: 240px; height: 160px; }
+  .letter-content-container {padding: 70px 0 0 0;}
 }
 
 /* --- TIMELINE NEW STYLES --- */
