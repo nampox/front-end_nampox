@@ -3,10 +3,10 @@ import './App.css'
 
 // Bộ sưu tập kỷ niệm (thay url bằng ảnh thật của bạn)
 const MEMORIES = [
-  { id: 1, url: 'https://images.unsplash.com/photo-1516961642265-531546e84af2?q=80&w=1000', caption: 'Ngày đầu tiên...' },
-  { id: 2, url: 'https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?q=80&w=1000', caption: 'Lần đi chơi xa' },
-  { id: 3, url: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1000', caption: 'Một chút ngốc nghếch' },
-  { id: 4, url: 'https://images.unsplash.com/photo-1511895426328-dc8714191300?q=80&w=1000', caption: 'Và hiện tại.' },
+  { id: 1, url: '/img1.jpg', caption: 'Ngày đầu tiên...' },
+  { id: 2, url: '/img2.jpg', caption: 'Ẻm hông chịu' },
+  { id: 3, url: '/img3.jpg', caption: 'Em đáng iu, em dỗi' },
+  { id: 4, url: '/img4.jpg', caption: 'Và em là của anh.' },
 ]
 
 function App() {
@@ -21,11 +21,13 @@ function App() {
 
   // Audio Ref
   const audioRef = useRef(null)
+  const bgFadeIntervalRef = useRef(null)
 
   useEffect(() => {
     audioRef.current = new Audio('/music.mp3')
     audioRef.current.loop = true
-    audioRef.current.volume = 0.5 
+    // Giảm volume nền mặc định cho nhẹ hơn
+    audioRef.current.volume = 0.3 
     
     return () => {
       if (audioRef.current) {
@@ -68,7 +70,33 @@ function App() {
 
   const handleVoicePlayingChange = (isPlaying) => {
     if (!audioRef.current) return
-    audioRef.current.volume = isPlaying ? 0.2 : 0.5
+
+    // Dừng fade cũ nếu đang chạy
+    if (bgFadeIntervalRef.current) {
+      clearInterval(bgFadeIntervalRef.current)
+      bgFadeIntervalRef.current = null
+    }
+
+    const duration = 7000 // 7s
+    const stepMs = 100
+    const steps = duration / stepMs
+
+    const startVolume = audioRef.current.volume
+    // Khi voice play: giảm còn 50% volume hiện tại, khi dừng: về mức nền 0.3
+    const targetVolume = isPlaying ? startVolume * 0.5 : 0.3
+
+    let currentStep = 0
+    bgFadeIntervalRef.current = setInterval(() => {
+      currentStep += 1
+      const progress = Math.min(currentStep / steps, 1)
+      const newVolume = startVolume + (targetVolume - startVolume) * progress
+      audioRef.current.volume = Math.max(0, Math.min(1, newVolume))
+
+      if (progress >= 1) {
+        clearInterval(bgFadeIntervalRef.current)
+        bgFadeIntervalRef.current = null
+      }
+    }, stepMs)
   }
 
   return (
