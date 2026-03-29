@@ -3,10 +3,11 @@ import './App.css'
 
 // Bộ sưu tập kỷ niệm (thay url bằng ảnh thật của bạn)
 const MEMORIES = [
-  { id: 1, url: 'https://images.unsplash.com/photo-1516961642265-531546e84af2?q=80&w=1000', caption: 'Ngày đầu tiên...' },
-  { id: 2, url: 'https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?q=80&w=1000', caption: 'Lần đi chơi xa' },
-  { id: 3, url: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1000', caption: 'Một chút ngốc nghếch' },
-  { id: 4, url: 'https://images.unsplash.com/photo-1511895426328-dc8714191300?q=80&w=1000', caption: 'Và hiện tại.' },
+  { id: 1, url: '/1.JPG', caption: 'Ngày đầu tiên...' },
+  { id: 2, url: '/2.JPG', caption: 'Lần đi chơi xa' },
+  { id: 3, url: '/3.JPG', caption: 'Một chút ngốc nghếch' },
+  { id: 4, url: '/4.JPG', caption: 'Và hiện tại.' },
+  { id: 5, url: '/5.JPG', caption: 'Và những ngày sau.' },
 ]
 
 function App() {
